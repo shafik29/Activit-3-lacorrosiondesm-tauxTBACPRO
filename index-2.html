@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Séquence 5 · Corrosion des métaux · Bac Pro</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&display=swap" rel="stylesheet">
+
+<style>
+/* ════════════════════════════════════════════
+   DESIGN SYSTEM — Violet / Bleu marine / Blanc
+════════════════════════════════════════════ */
+:root {
+  --ink:      #0d0f1a;       /* fond splash */
+  --navy:     #0f1535;       /* fond principal */
+  --violet:   #4f3fdb;       /* accent violet foncé */
+  --indigo:   #6366f1;       /* violet moyen */
+  --periwkl:  #818cf8;       /* violet clair */
+  --sky:      #38bdf8;       /* bleu ciel accent */
+  --white:    #ffffff;
+  --off:      #f8faff;       /* blanc légèrement bleuté */
+  --card:     #ffffff;
+  --border:   #e2e8f7;
+  --muted:    #64748b;
+  --green:    #059669;
+  --gbg:      #ecfdf5;
+  --gbr:      #6ee7b7;
+  --rbg:      #fff1f2;
+  --rbr:      #fda4af;
+  --gold:     #f59e0b;
+  --surface:  #f1f5fe;       /* fond cartes claires */
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--off);
+  color: #1e293b;
+  font-size: 15px;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* ══════════════════════════════
+   SPLASH SCREEN
+══════════════════════════════ */
+#splash {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--ink);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  overflow: hidden;
+  transition: opacity .6s ease, transform .6s ease;
+}
+#splash.hide {
+  opacity: 0;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+
+/* grille animée */
+#splash::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(99,102,241,.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,.12) 1px, transparent 1px);
+  background-size: 56px 56px;
+  animation: gridMove 12s linear infinite;
+}
+@keyframes gridMove {
+  from { background-position: 0 0; }
+  to   { background-position: 56px 56px; }
+}
+
+/* orbes lumineux */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: drift 8s ease-in-out infinite alternate;
+}
+.orb-1 { width:420px; height:420px; background:rgba(79,63,219,.35); top:-120px; left:-80px; animation-duration:9s; }
+.orb-2 { width:320px; height:320px; background:rgba(56,189,248,.2); bottom:-80px; right:-60px; animation-duration:7s; animation-delay:-3s; }
+.orb-3 { width:200px; height:200px; background:rgba(129,140,248,.25); top:40%; left:55%; animation-duration:11s; animation-delay:-5s; }
+@keyframes drift {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(30px, -20px) scale(1.1); }
+}
+
+.splash-inner {
+  position: relative; z-index: 1;
+  text-align: center;
+  padding: 32px 24px;
+  max-width: 680px;
+  animation: splashIn .9s cubic-bezier(.16,1,.3,1) forwards;
+}
+@keyframes splashIn {
+  from { opacity:0; transform: translateY(32px); }
+  to   { opacity:1; transform: none; }
+}
+
+.splash-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(99,102,241,.18);
+  border: 1px solid rgba(129,140,248,.4);
+  border-radius: 99px;
+  padding: 6px 18px;
+  font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--periwkl);
+  margin-bottom: 28px;
+  backdrop-filter: blur(8px);
+}
+.chip-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--sky);
+  box-shadow: 0 0 8px var(--sky);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+
+.splash-seq {
+  font-size: 12px; font-weight: 600; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--periwkl);
+  margin-bottom: 10px;
+}
+.splash-h1 {
+  font-size: clamp(32px, 6vw, 58px);
+  font-weight: 800;
+  line-height: 1.06;
+  color: var(--white);
+  margin-bottom: 10px;
+  letter-spacing: -.02em;
+}
+.splash-h1 .accent {
+  background: linear-gradient(135deg, var(--periwkl), var(--sky));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.splash-sub {
+  font-size: 14px; font-weight: 400;
+  color: rgba(255,255,255,.5);
+  margin-bottom: 36px;
+  letter-spacing: .01em;
+}
+
+.splash-meta {
+  display: flex; align-items: center; justify-content: center;
+  flex-wrap: wrap; gap: 10px;
+  margin-bottom: 40px;
+}
+.meta-pill {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 8px;
+  padding: 7px 15px;
+  font-size: 12px; font-weight: 600; color: rgba(255,255,255,.75);
+  backdrop-filter: blur(6px);
+}
+.meta-pill i { color: var(--periwkl); font-size: 14px; }
+
+.btn-start {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 10px;
+  background: linear-gradient(135deg, var(--violet), var(--indigo));
+  color: var(--white);
+  border: none; border-radius: 14px;
+  padding: 16px 40px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 16px; font-weight: 800;
+  letter-spacing: .02em;
+  cursor: pointer;
+  box-shadow: 0 0 40px rgba(99,102,241,.5), 0 4px 20px rgba(0,0,0,.3);
+  transition: all .25s;
+  overflow: hidden;
+}
+.btn-start::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.15), transparent);
+  border-radius: 14px;
+}
+.btn-start:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 0 60px rgba(99,102,241,.7), 0 8px 30px rgba(0,0,0,.35);
+}
+.btn-start .arrow {
+  width: 32px; height: 32px;
+  background: rgba(255,255,255,.18);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  transition: transform .25s;
+}
+.btn-start:hover .arrow { transform: translateX(4px); }
+
+.splash-hint {
+  margin-top: 20px; font-size: 11px; color: rgba(255,255,255,.25);
+  letter-spacing: .05em;
+}
+
+/* ══════════════════════════════
+   TOP BAR (activité)
+══════════════════════════════ */
+#topbar {
+  position: sticky; top: 0; z-index: 1030;
+  background: var(--navy);
+  color: #fff;
+  padding: 8px 24px;
+  display: flex; align-items: center; gap: 14px;
+  box-shadow: 0 2px 16px rgba(15,21,53,.4);
+  font-size: 12px; font-weight: 700;
+}
+.topbar-brand {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 700;
+  color: rgba(255,255,255,.5);
+  letter-spacing: .06em; text-transform: uppercase;
+  white-space: nowrap;
+}
+.topbar-brand i { color: var(--periwkl); }
+.prog-wrap { flex: 1; height: 6px; background: rgba(255,255,255,.1); border-radius: 99px; overflow: hidden; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--violet), var(--sky)); border-radius: 99px; transition: width .5s ease; width: 0%; }
+.topbar-score {
+  font-size: 13px; font-weight: 800;
+  color: var(--periwkl);
+  white-space: nowrap;
+}
+.topbar-score span { color: var(--sky); font-size: 16px; }
+
+/* ══════════════════════════════
+   PAGE HEADER
+══════════════════════════════ */
+.page-header {
+  background: linear-gradient(135deg, var(--navy) 0%, #1a1f4e 100%);
+  color: #fff;
+  padding: 40px 40px 32px;
+  position: relative; overflow: hidden;
+  border-bottom: 1px solid rgba(99,102,241,.2);
+}
+.page-header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(99,102,241,.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,.08) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+.page-header::after {
+  content: 'Fe₂O₃ · nH₂O';
+  position: absolute; right: 32px; bottom: 16px;
+  font-size: 11px; font-weight: 300;
+  color: rgba(255,255,255,.08); letter-spacing: .12em;
+}
+.header-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(99,102,241,.2);
+  border: 1px solid rgba(129,140,248,.35);
+  border-radius: 99px;
+  padding: 4px 14px;
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--periwkl);
+  margin-bottom: 14px;
+}
+.page-header h1 {
+  font-size: clamp(22px, 4vw, 36px);
+  font-weight: 800; line-height: 1.08; margin-bottom: 6px;
+  letter-spacing: -.01em;
+}
+.page-header h1 em { font-style: normal; color: var(--periwkl); }
+.page-header .meta-line {
+  font-size: 12px; color: rgba(255,255,255,.35);
+  letter-spacing: .05em; font-weight: 500;
+}
+.consigne-box {
+  margin-top: 20px;
+  background: rgba(99,102,241,.12);
+  border: 1px solid rgba(129,140,248,.25);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px; font-style: italic; color: rgba(255,255,255,.75);
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.consigne-box i { color: var(--periwkl); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.reporter-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(245,158,11,.15);
+  border: 1px solid rgba(245,158,11,.3);
+  border-radius: 5px; padding: 1px 8px;
+  font-size: 11px; font-weight: 700;
+  color: #fbbf24; font-style: normal;
+}
+
+/* ══════════════════════════════
+   SECTION LABEL
+══════════════════════════════ */
+.section-lbl {
+  font-size: 11px; font-weight: 800;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted);
+  display: flex; align-items: center; gap: 10px;
+  margin: 36px 0 16px;
+}
+.section-lbl::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.section-num {
+  background: linear-gradient(135deg, var(--violet), var(--indigo));
+  color: #fff; border-radius: 6px;
+  padding: 2px 12px; font-size: 11px; font-weight: 800;
+  letter-spacing: .06em;
+}
+
+/* ══════════════════════════════
+   VIDÉO
+══════════════════════════════ */
+.video-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(79,63,219,.08);
+  transition: box-shadow .2s;
+}
+.video-card:hover { box-shadow: 0 8px 32px rgba(79,63,219,.14); }
+.video-header {
+  background: linear-gradient(135deg, var(--navy), #1a1f4e);
+  padding: 12px 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.video-header .vid-icon {
+  width: 32px; height: 32px;
+  background: rgba(99,102,241,.3);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--periwkl); font-size: 15px; flex-shrink: 0;
+}
+.video-header .vid-title {
+  font-size: 12px; font-weight: 700;
+  color: #fff; letter-spacing: .03em;
+}
+.video-header .vid-sub {
+  font-size: 10px; font-weight: 500;
+  color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: .08em;
+}
+.video-wrap {
+  position: relative; padding-top: 56.25%;
+}
+.video-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+/* ══════════════════════════════
+   COMPÉTENCES
+══════════════════════════════ */
+.comp {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 5px; margin-right: 4px; flex-shrink: 0;
+}
+.comp-app { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+.comp-rea { background: #fdf2ff; color: #7e22ce; border: 1px solid #e9d5ff; }
+.comp-ana { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+
+/* ══════════════════════════════
+   QUESTION CARD
+══════════════════════════════ */
+.qblock {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 24px;
+  margin-bottom: 14px;
+  box-shadow: 0 1px 8px rgba(79,63,219,.06);
+  animation: fadeUp .45s cubic-bezier(.16,1,.3,1) forwards;
+  opacity: 0;
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+.qblock-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+.qnum {
+  font-size: 24px; font-weight: 900; line-height: 1;
+  flex-shrink: 0; min-width: 30px;
+  background: linear-gradient(135deg, var(--violet), var(--sky));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.qtext { font-size: 15px; font-weight: 600; line-height: 1.55; color: #1e293b; }
+.qtext em { font-style: normal; font-weight: 800; color: var(--violet); }
+
+/* ══════════════════════════════
+   À REPORTER
+══════════════════════════════ */
+.reporter {
+  background: #fffbeb;
+  border: 2px dashed #f59e0b;
+  border-radius: 10px;
+  padding: 11px 15px; margin-top: 14px;
+  font-size: 13px; color: #78350f;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.reporter i { font-size: 18px; color: #f59e0b; flex-shrink: 0; margin-top: 1px; }
+.reporter strong { display: block; font-weight: 800; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 2px; color: #92400e; }
+
+/* ══════════════════════════════
+   OPTIONS QCM
+══════════════════════════════ */
+.opt-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.opt-item {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 15px;
+  cursor: pointer; font-size: 14px; font-weight: 500;
+  user-select: none; transition: all .15s;
+}
+.opt-item:hover:not(.locked) {
+  border-color: var(--indigo);
+  background: #eef2ff;
+  transform: translateX(3px);
+}
+.opt-item.correct { border-color: var(--green)!important; background: var(--gbg)!important; color: var(--green)!important; font-weight:700; }
+.opt-item.wrong   { border-color: #e11d48!important; background: var(--rbg)!important; color: #e11d48!important; }
+.opt-item.locked  { cursor: default; transform: none!important; }
+.opt-key {
+  width: 28px; height: 28px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800;
+  background: #e2e8f0; color: #475569;
+  flex-shrink: 0; transition: all .15s;
+}
+.opt-item.correct .opt-key { background: var(--green); color: #fff; }
+.opt-item.wrong   .opt-key { background: #e11d48; color: #fff; }
+
+/* ══════════════════════════════
+   TEXTE À TROUS
+══════════════════════════════ */
+.trou-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px 18px;
+  font-size: 15px; line-height: 2.4; margin-top: 10px;
+}
+.trou-inp {
+  display: inline-block; border: none;
+  border-bottom: 2.5px solid var(--indigo);
+  background: transparent;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px; font-weight: 700; color: var(--navy);
+  text-align: center; min-width: 82px; padding: 0 4px;
+  outline: none; transition: border-color .2s, color .2s;
+}
+.trou-inp:focus { border-color: var(--violet); }
+.trou-inp.ok { border-color: var(--green); color: var(--green); }
+.trou-inp.ko { border-color: #e11d48; color: #e11d48; }
+
+/* ══════════════════════════════
+   RÉPONSE COURTE
+══════════════════════════════ */
+.rep-zone {
+  width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
+  background: var(--surface);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px; font-weight: 500; color: #1e293b;
+  padding: 11px 14px; resize: vertical; min-height: 68px;
+  margin-top: 10px; outline: none; transition: border-color .2s;
+}
+.rep-zone:focus { border-color: var(--indigo); }
+.rep-zone.ok { border-color: var(--green); background: var(--gbg); }
+.rep-zone.ko { border-color: #e11d48; background: var(--rbg); }
+
+/* ══════════════════════════════
+   TABLEAU
+══════════════════════════════ */
+.obs-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 8px; border-radius: 10px; overflow: hidden; }
+.obs-table thead tr { background: linear-gradient(135deg, var(--navy), #1a1f4e); }
+.obs-table th { color: #fff; padding: 11px 14px; font-weight: 700; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; text-align: center; }
+.obs-table th:first-child { text-align: left; }
+.obs-table td { padding: 9px 12px; border: 1px solid var(--border); vertical-align: middle; text-align: center; }
+.obs-table tr:nth-child(even) td { background: var(--surface); }
+.obs-table td:first-child { text-align: left; font-weight: 600; color: #334155; }
+.cell-inp {
+  width: 100%; border: none;
+  border-bottom: 2px solid var(--indigo);
+  background: transparent;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px; font-weight: 700; color: var(--navy);
+  text-align: center; outline: none; padding: 3px 4px;
+  transition: border-color .2s, color .2s;
+}
+.cell-inp:focus { border-color: var(--violet); }
+.cell-inp.ok { border-color: var(--green); color: var(--green); }
+.cell-inp.ko { border-color: #e11d48; color: #e11d48; }
+
+/* ══════════════════════════════
+   ÉQUATION
+══════════════════════════════ */
+.eq-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--indigo);
+  border-radius: 14px;
+  padding: 20px 22px; margin-bottom: 14px;
+  box-shadow: 0 1px 8px rgba(79,63,219,.06);
+}
+.eq-step-lbl {
+  font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.eq-step-num {
+  background: linear-gradient(135deg, var(--violet), var(--indigo));
+  color: #fff; border-radius: 5px;
+  padding: 2px 10px; font-size: 11px; font-weight: 800;
+}
+.eq-zone {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px 20px; margin-top: 8px;
+}
+.eq-row {
+  display: flex; align-items: center;
+  flex-wrap: wrap; gap: 5px;
+  font-size: 16px; font-weight: 700; line-height: 2.5;
+}
+.eq-part { color: #1e293b; }
+.eq-arrow { color: var(--violet); font-size: 22px; margin: 0 8px; }
+.eq-inp {
+  border: none;
+  border-bottom: 2.5px solid var(--indigo);
+  background: transparent;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 16px; font-weight: 800; color: var(--navy);
+  text-align: center; width: 60px; padding: 0 3px;
+  outline: none; transition: border-color .2s, color .2s;
+}
+.eq-inp:focus { border-color: var(--violet); }
+.eq-inp.ok { border-color: var(--green); color: var(--green); }
+.eq-inp.ko { border-color: #e11d48; color: #e11d48; }
+
+/* ══════════════════════════════
+   BOUTONS
+══════════════════════════════ */
+.btn-val {
+  margin-top: 12px;
+  background: linear-gradient(135deg, var(--violet), var(--indigo));
+  color: #fff; border: none; border-radius: 9px;
+  padding: 10px 22px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px; font-weight: 800;
+  letter-spacing: .03em;
+  cursor: pointer; transition: all .2s;
+  display: inline-flex; align-items: center; gap: 7px;
+  box-shadow: 0 4px 14px rgba(79,63,219,.3);
+}
+.btn-val:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(79,63,219,.45); }
+.btn-val:disabled { opacity: .4; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-retry {
+  margin-top: 8px; margin-left: 8px;
+  background: none;
+  border: 1.5px solid var(--border);
+  color: var(--muted);
+  border-radius: 9px; padding: 9px 16px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: all .2s;
+  display: none; align-items: center; gap: 6px;
+}
+.btn-retry:hover { border-color: var(--indigo); color: var(--indigo); background: #eef2ff; }
+.btn-retry.visible { display: inline-flex; }
+
+.tentatives {
+  font-size: 11px; color: var(--muted); font-weight: 600;
+  margin-top: 6px; font-style: italic;
+}
+
+/* ══════════════════════════════
+   FEEDBACK
+══════════════════════════════ */
+.fb {
+  display: none; margin-top: 12px;
+  padding: 11px 15px; border-radius: 10px;
+  font-size: 13px; font-weight: 500; line-height: 1.6;
+}
+.fb.ok { display:block; background:var(--gbg); border:1px solid var(--gbr); color:#065f46; }
+.fb.ko { display:block; background:var(--rbg); border:1px solid var(--rbr); color:#9f1239; }
+
+/* ══════════════════════════════
+   NOTICE REA
+══════════════════════════════ */
+.rea-notice {
+  background: #fdf4ff;
+  border: 1.5px solid #e9d5ff;
+  border-radius: 12px;
+  padding: 14px 18px; margin-bottom: 18px;
+  font-size: 13px; color: #581c87;
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.rea-notice i { font-size: 18px; flex-shrink: 0; color: #7e22ce; }
+
+/* ══════════════════════════════
+   CONTENT (hidden initially)
+══════════════════════════════ */
+#app-content { display: none; }
+
+/* ══════════════════════════════
+   VIDEO PLAYER AVEC FALLBACK
+══════════════════════════════ */
+.yt-player {
+  position: relative;
+  padding-top: 56.25%;
+  background: #000;
+  cursor: pointer;
+  overflow: hidden;
+}
+.yt-player img.yt-thumb {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform .3s;
+}
+.yt-player:hover img.yt-thumb { transform: scale(1.03); }
+.yt-player .yt-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(15,21,53,.55), rgba(79,63,219,.25));
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 12px;
+  transition: background .2s;
+}
+.yt-player:hover .yt-overlay { background: rgba(15,21,53,.35); }
+.yt-player .yt-btn {
+  width: 64px; height: 64px;
+  background: rgba(255,255,255,.95);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 24px rgba(0,0,0,.4);
+  transition: transform .2s, box-shadow .2s;
+}
+.yt-player:hover .yt-btn { transform: scale(1.1); box-shadow: 0 6px 32px rgba(0,0,0,.5); }
+.yt-btn i { color: #1a1a2e; font-size: 26px; margin-left: 4px; }
+.yt-player .yt-lbl {
+  background: rgba(0,0,0,.6);
+  color: #fff;
+  font-size: 12px; font-weight: 700;
+  padding: 5px 14px; border-radius: 99px;
+  letter-spacing: .04em;
+  display: flex; align-items: center; gap: 6px;
+  backdrop-filter: blur(4px);
+}
+.yt-player iframe {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  border: 0; display: none;
+}
+.yt-player.playing img.yt-thumb,
+.yt-player.playing .yt-overlay { display: none; }
+.yt-player.playing iframe { display: block; }
+
+/* ══════════════════════════════
+   ACCORDÉON — Déverrouillage progressif
+══════════════════════════════ */
+.step-block {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: max-height .7s cubic-bezier(.16,1,.3,1),
+              opacity .5s ease .1s,
+              transform .5s ease .1s;
+  pointer-events: none;
+  /* Garantit le masquage même des enfants en position relative */
+  visibility: hidden;
+}
+.step-block.unlocked {
+  max-height: 4000px;
+  opacity: 1;
+  transform: none;
+  pointer-events: all;
+  visibility: visible;
+}
+/* Premier bloc toujours visible */
+.step-block.first {
+  max-height: 4000px;
+  opacity: 1;
+  transform: none;
+  pointer-events: all;
+  visibility: visible;
+}
+/* Pastille "verrouillé" */
+.lock-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  background: var(--surface);
+  border: 1.5px dashed var(--border);
+  border-radius: 12px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.lock-badge i { font-size: 16px; color: #cbd5e1; }
+.step-block:not(.unlocked):not(.first) > .lock-badge { display: flex; }
+.step-block.unlocked > .lock-badge,
+.step-block.first > .lock-badge { display: none; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════
+     SPLASH SCREEN
+═══════════════════════════════ -->
+<div id="splash">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <div class="splash-inner">
+    <div class="splash-chip">
+      <div class="chip-dot"></div>
+      Sciences · Bac Pro
+    </div>
+
+    <div class="splash-seq">Séquence &nbsp;·&nbsp; Activité 3</div>
+
+    <h1 class="splash-h1">
+      La corrosion<br>des <span class="accent">métaux</span>
+    </h1>
+
+    <p class="splash-sub">
+      <strong style="color:rgba(255,255,255,.65)">Activité 3 — La corrosion des métaux</strong>
+    </p>
+
+    <div class="splash-meta">
+      <div class="meta-pill"><i class="bi bi-mortarboard-fill"></i> Bac Pro</div>
+      <div class="meta-pill"><i class="bi bi-collection-play-fill"></i> 2 vidéos</div>
+      <div class="meta-pill"><i class="bi bi-pencil-square"></i> Activité guidée</div>
+      <div class="meta-pill"><i class="bi bi-shield-check-fill"></i> Autocorrection</div>
+    </div>
+
+    <button class="btn-start" onclick="startActivity()">
+      <i class="bi bi-play-fill"></i>
+      Commencer l'activité
+      <span class="arrow"><i class="bi bi-arrow-right"></i></span>
+    </button>
+
+    <p class="splash-hint">Appuyez sur Entrée ou cliquez pour démarrer</p>
+  </div>
+
+  <!-- Footer splash -->
+  <div style="position:absolute;bottom:0;left:0;right:0;z-index:2;padding:14px 32px;border-top:1px solid rgba(99,102,241,.15);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;color:rgba(255,255,255,.3)">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:28px;height:28px;background:linear-gradient(135deg,#4f3fdb,#6366f1);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <i class="bi bi-person-fill" style="color:#fff;font-size:12px"></i>
+      </div>
+      <div>
+        <span style="color:rgba(255,255,255,.65);font-weight:700">M. Ben Ahmed</span>
+        <span style="margin-left:6px">· Professeur de mathématiques et de sciences · Académie de Nice</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+      <a href="mailto:shafik.ben-ahmed@ac-nice.fr" style="color:#818cf8;text-decoration:none;font-weight:600;display:flex;align-items:center;gap:5px;font-size:11px">
+        <i class="bi bi-envelope-fill"></i> shafik.ben-ahmed@ac-nice.fr
+      </a>
+      <span style="display:flex;align-items:center;gap:4px">
+        <i class="bi bi-c-circle-fill" style="font-size:11px"></i>
+        <span id="splash-year"></span> · Tous droits réservés
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     CONTENU ACTIVITÉ
+═══════════════════════════════ -->
+<div id="app-content">
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div class="topbar-brand">
+    <i class="bi bi-atom"></i> Corrosion des métaux
+  </div>
+  <div class="prog-wrap"><div class="prog-fill" id="prog"></div></div>
+  <div class="topbar-score"><span id="etape-n">0</span> / <span id="etape-tot">6</span> étapes</div>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="container-lg px-0 position-relative">
+    <div class="header-badge">
+      <i class="bi bi-lightning-charge-fill"></i>
+      Physique-Chimie · Sciences appliquées
+    </div>
+    <h1>La <em>corrosion</em> des métaux</h1>
+    <div class="meta-line">
+      BAC PRO &nbsp;·&nbsp; SÉQUENCE &nbsp;·&nbsp; ACTIVITÉ 3 &nbsp;·&nbsp; Activité guidée autocorrigée
+    </div>
+    <div class="consigne-box">
+      <i class="bi bi-info-circle-fill"></i>
+      <span>
+        Cette page vous aide à <strong>comprendre et vérifier</strong> votre raisonnement avant de reporter vos réponses sur votre feuille d'activité.
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CONTENU ═══ -->
+<div class="container-lg py-4">
+
+<!-- ── SECTION A ── -->
+<div class="step-block first" id="block-A">
+<div class="section-lbl"><span class="section-num">A</span> Observation du phénomène de corrosion</div>
+
+<!-- VIDÉOS -->
+<div class="row g-3 mb-4">
+  <div class="col-md-6">
+    <div class="video-card">
+      <div class="video-header">
+        <div class="vid-icon"><i class="bi bi-play-fill"></i></div>
+        <div>
+          <div class="vid-sub">Vidéo 1</div>
+          <div class="vid-title">Réaction ox/red du fer</div>
+        </div>
+      </div>
+      <div class="video-wrap">
+        <iframe src="https://www.youtube.com/embed/jsjB1a6c8IM?si=t4u_8dBeuFfbB7JB"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="video-card">
+      <div class="video-header">
+        <div class="vid-icon"><i class="bi bi-play-fill"></i></div>
+        <div>
+          <div class="vid-sub">Vidéo 2</div>
+          <div class="vid-title">Corrosion et passivation</div>
+        </div>
+      </div>
+      <div class="video-wrap">
+        <iframe src="https://www.youtube.com/embed/cRK2L1JFMoM?si=3i3hHeXjyZDN4F25"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q1 -->
+<div class="qblock" style="animation-delay:.08s">
+  <div class="qblock-top">
+    <div class="qnum">1</div>
+    <div class="w-100">
+      <div class="mb-2"><span class="comp comp-app">APP</span></div>
+      <div class="qtext">À l'aide des vidéos, <em>décrire</em> en quelques mots le phénomène de corrosion des métaux.</div>
+    </div>
+  </div>
+  <div class="opt-list" id="q1-opts">
+    <div class="opt-item" onclick="pickOpt(this,'q1','A')" data-l="A"><div class="opt-key">A</div>La corrosion est une réaction de fusion du métal sous l'effet de la température</div>
+    <div class="opt-item" onclick="pickOpt(this,'q1','B')" data-l="B"><div class="opt-key">B</div>La corrosion est une dégradation chimique du métal par oxydation au contact du milieu environnant (eau, O₂, ions...)</div>
+    <div class="opt-item" onclick="pickOpt(this,'q1','C')" data-l="C"><div class="opt-key">C</div>La corrosion est un simple dépôt de poussière sur la surface du métal</div>
+    <div class="opt-item" onclick="pickOpt(this,'q1','D')" data-l="D"><div class="opt-key">D</div>La corrosion est un phénomène purement mécanique dû aux frottements</div>
+  </div>
+  <div class="fb" id="q1-fb"></div>
+  <div class="d-flex gap-2 mt-2">
+    <button class="btn-retry visible" id="btnretry-q1" onclick="resetQCM('q1')" style="display:none"><i class="bi bi-arrow-counterclockwise"></i> Réessayer</button>
+  </div>
+</div>
+
+</div><!-- /block-A -->
+
+<!-- ── SECTION B ── -->
+<div class="step-block" id="block-B">
+<div class="lock-badge"><i class="bi bi-lock-fill"></i> Répondez correctement à la question 1 pour déverrouiller cette section.</div>
+<div class="section-lbl"><span class="section-num">B</span> Expérience — Facteurs favorisant la corrosion</div>
+
+<!-- Vidéo expérience -->
+<div class="mb-4">
+  <div class="video-card">
+    <div class="video-header">
+      <div class="vid-icon"><i class="bi bi-flask-fill"></i></div>
+      <div>
+        <div class="vid-sub">Expérience</div>
+        <div class="vid-title">Clous dans différents milieux — évolution sur 3 jours</div>
+      </div>
+    </div>
+      <div class="video-wrap">
+        <iframe src="https://www.youtube.com/embed/WcmkdI9t2tg?si=uvc27HbFU4wixWxN"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
+      </div>
+  </div>
+</div>
+
+<!-- Tableau Q2 -->
+<div class="qblock" style="animation-delay:.12s">
+  <div class="qblock-top">
+    <div class="qnum">2</div>
+    <div class="w-100">
+      <div class="mb-2"><span class="comp comp-app">APP</span><span class="comp comp-ana">ANA</span></div>
+      <div class="qtext">Complétez le tableau d'observations d'après la vidéo. Répondez par <strong>Oui</strong> ou <strong>Non</strong>.</div>
+    </div>
+  </div>
+  <div class="table-responsive mt-2">
+    <table class="obs-table">
+      <thead><tr>
+        <th style="text-align:left;width:28%">Milieu</th>
+        <th style="width:22%">Eau présente ?</th>
+        <th style="width:22%">O₂ présent ?</th>
+        <th style="width:28%">Rouille observée ?</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td>Eau + huile (isolé de l'air)</td>
+          <td><input class="cell-inp" id="tb1a" placeholder="…" data-accept="oui|yes"></td>
+          <td><input class="cell-inp" id="tb1b" placeholder="…" data-accept="non|no"></td>
+          <td><input class="cell-inp" id="tb1c" placeholder="…" data-accept="non|no"></td>
+        </tr>
+        <tr>
+          <td>Eau + sel</td>
+          <td><input class="cell-inp" id="tb2a" placeholder="…" data-accept="oui|yes"></td>
+          <td><input class="cell-inp" id="tb2b" placeholder="…" data-accept="oui|yes"></td>
+          <td><input class="cell-inp" id="tb2c" placeholder="…" data-accept="oui|yes|intense|forte|beaucoup"></td>
+        </tr>
+        <tr>
+          <td>Eau seule</td>
+          <td><input class="cell-inp" id="tb3a" placeholder="…" data-accept="oui|yes"></td>
+          <td><input class="cell-inp" id="tb3b" placeholder="…" data-accept="oui|yes"></td>
+          <td><input class="cell-inp" id="tb3c" placeholder="…" data-accept="oui|yes"></td>
+        </tr>
+        <tr>
+          <td>Air sec</td>
+          <td><input class="cell-inp" id="tb4a" placeholder="…" data-accept="non|no"></td>
+          <td><input class="cell-inp" id="tb4b" placeholder="…" data-accept="oui|yes"></td>
+          <td><input class="cell-inp" id="tb4c" placeholder="…" data-accept="non|no"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="d-flex flex-wrap gap-2">
+    <button class="btn-val" onclick="checkTableau()"><i class="bi bi-check-circle-fill"></i> Valider le tableau</button>
+    <button class="btn-retry" id="btnretry-tableau" onclick="resetTableau()" style="display:none"><i class="bi bi-arrow-counterclockwise"></i> Réessayer</button>
+  </div>
+  <div class="fb" id="tableau-fb"></div>
+</div>
+
+<!-- Q3 -->
+<div class="qblock" style="animation-delay:.16s">
+  <div class="qblock-top">
+    <div class="qnum">3</div>
+    <div class="w-100">
+      <div class="mb-2"><span class="comp comp-val" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:5px;margin-right:4px">VAL</span></div>
+      <div class="qtext">D'après l'expérience, quels sont les <em>deux facteurs indispensables</em> à la formation de la rouille ?</div>
+    </div>
+  </div>
+  <div class="opt-list" id="q3-opts">
+    <div class="opt-item" onclick="pickOpt(this,'q3','A')" data-l="A"><div class="opt-key">A</div>La chaleur et la lumière</div>
+    <div class="opt-item" onclick="pickOpt(this,'q3','B')" data-l="B"><div class="opt-key">B</div>L'eau (H₂O) et le dioxygène (O₂)</div>
+    <div class="opt-item" onclick="pickOpt(this,'q3','C')" data-l="C"><div class="opt-key">C</div>Le sel et l'air uniquement</div>
+    <div class="opt-item" onclick="pickOpt(this,'q3','D')" data-l="D"><div class="opt-key">D</div>L'huile et l'eau</div>
+  </div>
+  <div class="fb" id="q3-fb"></div>
+  <div class="d-flex gap-2 mt-2">
+    <button class="btn-retry" id="btnretry-q3" onclick="resetQCM('q3')" style="display:none"><i class="bi bi-arrow-counterclockwise"></i> Réessayer</button>
+  </div>
+</div>
+
+<!-- Q4 -->
+<div class="qblock" style="animation-delay:.2s">
+  <div class="qblock-top">
+    <div class="qnum">4</div>
+    <div class="w-100">
+      <div class="mb-2"><span class="comp comp-app">APP</span></div>
+      <div class="qtext">La corrosion du fer correspond-elle à une <em>oxydation</em> ou à une <em>réduction</em> ?</div>
+    </div>
+  </div>
+  <div class="opt-list" id="q4-opts">
+    <div class="opt-item" onclick="pickOpt(this,'q4','A')" data-l="A"><div class="opt-key">A</div>Une réduction — le fer gagne des électrons</div>
+    <div class="opt-item" onclick="pickOpt(this,'q4','B')" data-l="B"><div class="opt-key">B</div>Une oxydation — le fer perd des électrons pour former Fe²⁺</div>
+    <div class="opt-item" onclick="pickOpt(this,'q4','C')" data-l="C"><div class="opt-key">C</div>Ni l'un ni l'autre — c'est une réaction acido-basique</div>
+  </div>
+  <div class="fb" id="q4-fb"></div>
+  <div class="d-flex gap-2 mt-2">
+    <button class="btn-retry" id="btnretry-q4" onclick="resetQCM('q4')" style="display:none"><i class="bi bi-arrow-counterclockwise"></i> Réessayer</button>
+  </div>
+</div>
+
+</div><!-- /block-B -->
+
+<!-- ── SECTION C ── -->
+<div class="step-block" id="block-C">
+<div class="lock-badge"><i class="bi bi-lock-fill"></i> Complétez les questions 2, 3 et 4 pour déverrouiller les équations.</div>
+<div class="section-lbl"><span class="section-num">C</span> Demi-équations et équation globale</div>
+
+<div class="qblock" style="border-left:4px solid var(--indigo)">
+  <div class="qblock-top">
+    <div class="qnum">5</div>
+    <div class="w-100">
+      <div class="mb-2"><span class="comp comp-rea">REA</span></div>
+      <div class="qtext">Établir les demi-équations électroniques et l'équation globale liées aux différentes étapes du phénomène de corrosion du fer jusqu'à la rouille.</div>
+    </div>
+  </div>
+  <p style="font-size:13px;color:var(--muted);margin:0">
+    Complétez chaque équation puis cliquez <strong>Vérifier</strong>. Vous pouvez recommencer autant de fois que nécessaire — la correction ne s'affiche jamais. Des indices ciblés vous guident en cas d'erreur. ⚠️ Veillez à équilibrer les électrons.
+  </p>
+</div>
+<div class="eq-card" id="card-s1">
+  <div class="eq-step-lbl"><span class="eq-step-num">①</span> Réduction du dioxygène — couple O₂ / H₂O <span class="ms-2 text-muted" style="font-size:10px">(Ox₁ se réduit)</span></div>
+  <div class="eq-zone">
+    <div class="eq-row">
+      <input class="eq-inp" id="e1a" placeholder="Ox₁">
+      <span class="eq-part"> + </span>
+      <input class="eq-inp" id="e1b" placeholder="?">
+      <span class="eq-part"> e⁻ + </span>
+      <input class="eq-inp" id="e1c" placeholder="?">
+      <span class="eq-part"> H⁺</span>
+      <span class="eq-arrow">→</span>
+      <span class="eq-part">2 H₂O</span>
+    </div>
+  </div>
+  <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+    <button class="btn-val" id="btnv-s1" onclick="verifEq('s1')"><i class="bi bi-check-circle-fill"></i> Vérifier</button>
+    <button class="btn-retry" id="btnr-s1" onclick="resetEq('s1')"><i class="bi bi-arrow-counterclockwise"></i> Réessayer</button>
+  </div>
+  <div class="tentatives" id="tent-s1"></div>
+  <div class="fb" id="s1-fb"></div>
+</div>
+
+<!-- ② Oxydation Fe -->
+<div class="eq-card" id="card-s2">
+  <div class="eq-step-lbl"><span class="eq-step-num">②</span> Oxydation du fer — couple Fe²⁺ / Fe <span class="ms-2 text-muted" style="font-size:10px">(Red₂ s'oxyde)</span></div>
+  <div class="eq-zone">
+    <div class="eq-row">
+      <span class="eq-part">Fe</span>
+      <span class="eq-arrow">→</span>
+      <input class="eq-inp" id="e2a" placeholder="Ox₂">
+      <span class="eq-part"> + </span>
+      <input class="eq-inp" id="e2b" placeholder="?">
+      <span class="eq-part"> e⁻</span>
+    </div>
+  </div>
+  <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+    <button class="btn-val" id="btnv-s2" onclick="verifEq('s2')"><i class="bi bi-check-circle-fill"></i> Vérifier</button>
+    <button class="btn-retry" id="btnr-s2" onclick="resetEq('s2')"><i class="bi bi-arrow-counterclockwise"></i> Réessayer</button>
+  </div>
+  <div class="tentatives" id="tent-s2"></div>
+  <div class="fb" id="s2-fb"></div>
+</div>
+
+<!-- ÉTAPE ÉQUILIBRAGE e⁻ -->
+<div class="eq-card" id="card-seq" style="border-left-color:#8b5cf6;background:#faf5ff;">
+  <div class="eq-step-lbl"><span class="eq-step-num" style="background:#8b5cf6">⚖</span> Équilibrage des électrons <span class="ms-2 text-muted" style="font-size:10px">(avant de combiner ① et ②)</span></div>
+  <p style="font-size:13px;color:#4c1d95;margin:0 0 10px">
+    Pour pouvoir additionner les demi-équations, les deux demi-équations doivent échanger le <strong>même nombre d'électrons</strong>.
+    Quel coefficient faut-il appliquer à la demi-équation <strong>②</strong> pour que les électrons s'annulent ?
+  </p>
+  <div class="eq-zone" style="background:#f3e8ff;border-color:#d8b4fe">
+    <!-- ① fixe : O2 + 4e- + 4H+ → 2H2O -->
+    <div style="font-size:12px;font-weight:700;color:#6d28d9;margin-bottom:4px;letter-spacing:.04em">① × 1 (inchangée) :</div>
+    <div class="eq-row" style="margin-bottom:10px">
+      <span class="eq-part">O₂ + 4 e⁻ + 4 H⁺</span>
+      <span class="eq-arrow">→</span>
+      <span class="eq-part">2 H₂O</span>
+    </div>
+    <!-- ② à multiplier -->
+    <div style="font-size:12px;font-weight:700;color:#6d28d9;margin-bottom:4px;letter-spacing:.04em">② × <input class="eq-inp" id="eseq" placeholder="?" style="width:46px;border-bottom-color:#8b5cf6"> :</div>
+    <div class="eq-row">
+      <span class="eq-part" id="seq-preview" style="color:#4c1d95;font-style:italic">Fe → Fe²⁺ + ? e⁻</span>
+    </div>
+    <p style="font-size:12px;color:#6d28d9;margin-top:10px;margin-bottom:0">
+      ⚠️ Le coefficient choisi doit donner <strong>4 e⁻</strong> du côté de ② aussi, pour que les électrons s'annulent lors de l'addition.
+    </p>
+  </div>
+  <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+    <button class="btn-val" id="btnv-seq" onclick="verifEq('seq')" style="background:linear-gradient(135deg,#7c3aed,#8b5cf6)"><i class="bi bi-check-circle-fill"></i> Vérifier</button>
+    <button class="btn-retry" id="btnr-seq" onclick="resetEq('seq')"><i class="bi bi-arrow-counterclockwise"></i> Réessayer</button>
+  </div>
+  <div class="tentatives" id="tent-seq"></div>
+  <div class="fb" id="seq-fb"></div>
+</div>
+
+<!-- Équation globale 1re étape -->
+<div class="eq-card" id="card-sg1" style="border-left-color:var(--gold)">
+  <div class="eq-step-lbl"><span class="eq-step-num" style="background:var(--gold)">→</span> Équation globale — 1ʳᵉ étape <span class="ms-2 text-muted" style="font-size:10px">(combiner ① et ② en éliminant les e⁻)</span></div>
+  <div class="eq-zone">
+    <div class="eq-row">
+      <input class="eq-inp" id="eg1a" placeholder="?">
+      <span class="eq-part"> Fe + </span>
+      <input class="eq-inp" id="eg1b" placeholder="?">
+      <span class="eq-part"> O₂ + </span>
+      <input class="eq-inp" id="eg1c" placeholder="?">
+      <span class="eq-part"> H⁺</span>
+      <span class="eq-arrow">→</span>
+      <input class="eq-inp" id="eg1d" placeholder="?">
+      <span class="eq-part"> Fe²⁺ + </span>
+      <input class="eq-inp" id="eg1e" placeholder="?">
+      <span class="eq-part"> H₂O</span>
+    </div>
+  </div>
+  <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+    <button class="btn-val" id="btnv-sg1" onclick="verifEq('sg1')"><i class="bi bi-check-circle-fill"></i> Vérifier</button>
+    <button class="btn-retry" id="btnr-sg1" onclick="resetEq('sg1')"><i class="bi bi-arrow-counterclockwise"></i> Réessayer</button>
+  </div>
+  <div class="tentatives" id="tent-sg1"></div>
+  <div class="fb" id="sg1-fb"></div>
+</div>
+
+<!-- ③ Oxydation Fe²⁺ → Fe³⁺ -->
+<div class="eq-card" id="card-s3">
+  <div class="eq-step-lbl"><span class="eq-step-num">③</span> Oxydation du fer II — couple Fe³⁺ / Fe²⁺ <span class="ms-2 text-muted" style="font-size:10px">(2ᵉ oxydation)</span></div>
+  <p style="font-size:13px;color:var(--muted);margin:0 0 6px">Les ions Fe²⁺ subissent une seconde oxydation au contact de l'air.</p>
+  <div class="eq-zone">
+    <div class="eq-row">
+      <span class="eq-part">Fe²⁺</span>
+      <span class="eq-arrow">→</span>
+      <input class="eq-inp" id="e3a" placeholder="Ox₂">
+      <span class="eq-part"> + </span>
+      <input class="eq-inp" id="e3b" placeholder="?">
+      <span class="eq-part"> e⁻</span>
+    </div>
+  </div>
+  <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+    <button class="btn-val" id="btnv-s3" onclick="verifEq('s3')"><i class="bi bi-check-circle-fill"></i> Vérifier</button>
+    <button class="btn-retry" id="btnr-s3" onclick="resetEq('s3')"><i class="bi bi-arrow-counterclockwise"></i> Réessayer</button>
+  </div>
+  <div class="tentatives" id="tent-s3"></div>
+  <div class="fb" id="s3-fb"></div>
+</div>
+
+<!-- Équation rouille -->
+<div class="eq-card" id="card-sr" style="border-left-color:#e11d48">
+  <div class="eq-step-lbl"><span class="eq-step-num" style="background:#e11d48">⚠</span> Équation de formation de la rouille — Fe₂O₃</div>
+  <p style="font-size:13px;color:var(--muted);margin:0 0 6px">Les ions Fe³⁺ précipitent en oxyde ferrique <strong>Fe₂O₃</strong>. En milieu légèrement acide :</p>
+  <div class="eq-zone">
+    <div class="eq-row">
+      <input class="eq-inp" id="er1" placeholder="?">
+      <span class="eq-part"> Fe²⁺ + O₂ + </span>
+      <input class="eq-inp" id="er2" placeholder="?">
+      <span class="eq-part"> H₂O</span>
+      <span class="eq-arrow">→</span>
+      <input class="eq-inp" id="er3" style="width:80px" placeholder="produit">
+      <span class="eq-part"> + </span>
+      <input class="eq-inp" id="er4" placeholder="?">
+      <span class="eq-part"> H⁺</span>
+    </div>
+  </div>
+  <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+    <button class="btn-val" id="btnv-sr" onclick="verifEq('sr')"><i class="bi bi-check-circle-fill"></i> Vérifier</button>
+    <button class="btn-retry" id="btnr-sr" onclick="resetEq('sr')"><i class="bi bi-arrow-counterclockwise"></i> Réessayer</button>
+  </div>
+  <div class="tentatives" id="tent-sr"></div>
+  <div class="fb" id="sr-fb"></div>
+</div>
+
+
+
+</div><!-- /block-C -->
+
+<!-- Q6 -->
+<div class="step-block" id="block-Q6">
+<div class="lock-badge"><i class="bi bi-lock-fill"></i> Validez les équations de la question 5 pour accéder à cette question.</div>
+<div class="qblock" style="animation-delay:.28s">
+  <div class="qblock-top">
+    <div class="qnum">6</div>
+    <div class="w-100">
+      <div class="mb-2"><span class="comp comp-app">APP</span></div>
+      <div class="qtext"><em>Donner</em> la particularité de certains métaux comme l'aluminium ou le cuivre face à la corrosion. Sont-ils totalement immunisés ?</div>
+    </div>
+  </div>
+  <div class="opt-list" id="q6-opts">
+    <div class="opt-item" onclick="pickOpt(this,'q6','A')" data-l="A"><div class="opt-key">A</div>Oui, ils ne se corrodent jamais car ce sont des métaux nobles</div>
+    <div class="opt-item" onclick="pickOpt(this,'q6','B')" data-l="B"><div class="opt-key">B</div>Non — ils s'oxydent mais forment une couche d'oxyde protectrice imperméable (passivation) qui stoppe la corrosion en profondeur</div>
+    <div class="opt-item" onclick="pickOpt(this,'q6','C')" data-l="C"><div class="opt-key">C</div>Ils se corrodent exactement comme le fer, mais plus lentement</div>
+    <div class="opt-item" onclick="pickOpt(this,'q6','D')" data-l="D"><div class="opt-key">D</div>Ils ne réagissent jamais avec l'oxygène</div>
+  </div>
+  <div class="fb" id="q6-fb"></div>
+  <div class="d-flex gap-2 mt-2">
+    <button class="btn-retry" id="btnretry-q6" onclick="resetQCM('q6')" style="display:none"><i class="bi bi-arrow-counterclockwise"></i> Réessayer</button>
+  </div>
+</div>
+
+</div><!-- /block-Q6 -->
+
+<!-- Q7 -->
+<div class="step-block" id="block-Q7">
+<div class="lock-badge"><i class="bi bi-lock-fill"></i> Répondez à la question 6 pour accéder à cette dernière question.</div>
+<div class="qblock" style="animation-delay:.32s">
+  <div class="qblock-top">
+    <div class="qnum">7</div>
+    <div class="w-100">
+      <div class="mb-2"><span class="comp comp-val" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:5px;margin-right:4px">VAL</span></div>
+      <div class="qtext"><em>Préciser</em> pourquoi certains métaux comme l'or sont appelés « métaux nobles ».</div>
+    </div>
+  </div>
+  <div class="trou-box">
+    L'or est dit « métal noble » car il se trouve en
+    <input class="trou-inp" id="t2a" size="5" placeholder="…">
+    de la classification électrochimique.
+    Son pouvoir <input class="trou-inp" id="t2b" size="11" placeholder="…"> est
+    <input class="trou-inp" id="t2c" size="7" placeholder="…">,
+    ce qui signifie qu'il <input class="trou-inp" id="t2d" size="8" placeholder="…"> très difficilement ses électrons.
+    Il ne s'<input class="trou-inp" id="t2e" size="7" placeholder="…"> donc quasiment pas.
+  </div>
+  <p style="font-size:12px;color:var(--muted);margin-top:6px;font-style:italic">
+    Mots à utiliser : <strong>oxyde · cède · haut · faible · réducteur</strong>
+  </p>
+  <div class="d-flex flex-wrap gap-2 mt-2">
+    <button class="btn-val" onclick="checkTrous('q2')"><i class="bi bi-check-circle-fill"></i> Valider</button>
+    <button class="btn-retry" id="btnretry-q7" onclick="resetTrous()" style="display:none"><i class="bi bi-arrow-counterclockwise"></i> Réessayer</button>
+  </div>
+  <div class="fb" id="q2-fb"></div>
+</div>
+
+</div><!-- /block-Q7 -->
+</div><!-- /container -->
+
+<!-- FOOTER -->
+<footer style="
+  background: var(--navy);
+  border-top: 1px solid rgba(99,102,241,.2);
+  padding: 24px 40px;
+  margin-top: 48px;
+  font-size: 12px;
+  color: rgba(255,255,255,.35);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+">
+  <div class="container-lg px-0 d-flex flex-wrap align-items-center justify-content-between gap-3">
+    <div class="d-flex align-items-center gap-3">
+      <div style="
+        width: 38px; height: 38px;
+        background: linear-gradient(135deg, var(--violet), var(--indigo));
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+      ">
+        <i class="bi bi-person-fill" style="color:#fff;font-size:16px"></i>
+      </div>
+      <div>
+        <div style="color:rgba(255,255,255,.75);font-weight:700;font-size:13px;letter-spacing:.02em">
+          M. Ben Ahmed
+        </div>
+        <div style="color:rgba(255,255,255,.4);font-size:11px;margin-top:1px">
+          Professeur de mathématiques et de sciences · Académie de Nice
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center gap-4 flex-wrap">
+      <a href="mailto:shafik.ben-ahmed@ac-nice.fr" style="
+        color: var(--periwkl);
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 600;
+        display: flex; align-items: center; gap: 6px;
+        transition: color .2s;
+      " onmouseover="this.style.color='var(--sky)'" onmouseout="this.style.color='var(--periwkl)'">
+        <i class="bi bi-envelope-fill"></i>
+        shafik.ben-ahmed@ac-nice.fr
+      </a>
+      <div style="color:rgba(255,255,255,.25);font-size:11px;display:flex;align-items:center;gap:5px">
+        <i class="bi bi-c-circle-fill" style="font-size:12px"></i>
+        <span id="footer-year"></span> · Tous droits réservés
+      </div>
+    </div>
+  </div>
+</footer>
+
+</div><!-- /app-content -->
+
+<script>
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+  document.getElementById('splash-year').textContent = new Date().getFullYear();
+
+/* ══════════════════════════════════
+   PLAYER VIDEO AVEC FALLBACK
+══════════════════════════════════ */
+function playVideo(pid, embedUrl, watchUrl) {
+  const player = document.getElementById(pid);
+  const iframe = document.getElementById('iframe-' + pid);
+  // Tente l'embed
+  iframe.src = embedUrl;
+  player.classList.add('playing');
+  // Si l'iframe échoue (erreur 153 = fichier local), ouvrir dans YouTube
+  iframe.onerror = () => {
+    player.classList.remove('playing');
+    window.open(watchUrl, '_blank');
+  };
+  // Détection erreur via postMessage (YouTube envoie un message en cas de blocage)
+  setTimeout(() => {
+    // Si toujours en erreur après 2s sur fichier local, proposer lien externe
+    if (window.location.protocol === 'file:') {
+      player.classList.remove('playing');
+      iframe.src = '';
+      window.open(watchUrl, '_blank');
+    }
+  }, 100);
+}
+
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ══════════════════════════════════
+   SPLASH
+══════════════════════════════════ */
+function startActivity() {
+  document.getElementById('splash').classList.add('hide');
+  setTimeout(() => {
+    document.getElementById('splash').style.display = 'none';
+    const app = document.getElementById('app-content');
+    app.style.display = 'block';
+    app.style.animation = 'fadeUp .6s ease forwards';
+  }, 600);
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !document.getElementById('splash').classList.contains('hide')) {
+    startActivity();
+  }
+});
+
+/* ══════════════════════════════════
+   DONNÉES QCM
+══════════════════════════════════ */
+const TOTAL = 5; // q1, tableau, q3, q4, q6/q2 groupés
+const QCM = {
+  q1:{ correct:'B',
+    fb_ok:'✅ Exact ! La corrosion est une dégradation chimique par oxydation au contact du milieu environnant.',
+    fb_ko:'❌ Réponse B. La corrosion est une réaction chimique d\'oxydation qui dégrade le métal au contact de l\'eau, du dioxygène et des ions.' },
+  q3:{ correct:'B',
+    fb_ok:'✅ Exact ! L\'eau et le dioxygène sont tous deux indispensables. Les tubes "eau+huile" (sans O₂) et "air sec" (sans eau) ne présentent aucune rouille.',
+    fb_ko:'❌ Réponse B. Seul le tube avec EAU et DIOXYGÈNE dissous forme de la rouille.' },
+  q4:{ correct:'B',
+    fb_ok:'✅ Correct ! Corrosion = oxydation. Fe → Fe²⁺ + 2e⁻ : le fer perd des électrons.',
+    fb_ko:'❌ Réponse B. La corrosion est une oxydation : Fe perd 2 électrons → Fe²⁺.' },
+  q6:{ correct:'B',
+    fb_ok:'✅ Bravo ! L\'aluminium s\'oxyde (Al₂O₃) mais sa couche d\'oxyde est imperméable → passivation. Contrairement au fer, la corrosion ne progresse pas.',
+    fb_ko:'❌ Réponse B. Passivation : l\'oxyde protecteur est dense et imperméable, contrairement à la rouille poreuse du fer.' },
+};
+
+const TROUS_Q2 = [
+  {id:'t2a', accept:['haut'],                    hint:'haut'},
+  {id:'t2b', accept:['réducteur','reducteur'],    hint:'réducteur'},
+  {id:'t2c', accept:['faible'],                   hint:'faible'},
+  {id:'t2d', accept:['cède','cede'],              hint:'cède'},
+  {id:'t2e', accept:['oxyde'],                    hint:'oxyde'},
+];
+
+const EQ_DEF = {
+  s1:{ fields:[
+    {id:'e1a', accept:['o2','o₂'],
+     indices:['⚠ Ce n\'est pas le bon réactif. Quel est l\'oxydant du couple O₂/H₂O ?']},
+    {id:'e1b', accept:['4'],
+     indices:['⚠ Le nombre d\'électrons est mal équilibré. Comptez : 2H₂O = 4H → il faut 4H⁺ et 4e⁻.','⚠ Vérifiez les charges : à gauche 0 − e⁻ + H⁺ ; à droite H₂O est neutre → 4e⁻.']},
+    {id:'e1c', accept:['4'],
+     indices:['⚠ Nombre de H⁺ incorrect. 2H₂O contient 4H → 4H⁺ à gauche.','⚠ Conservation de H : 2H₂O = 4 atomes H → 4H⁺.']},
+  ]},
+  s2:{ fields:[
+    {id:'e2a', accept:['fe2+','fe²+'],
+     indices:['⚠ Ion incorrect. Couple Fe²⁺/Fe → le fer s\'oxyde en Fe²⁺.','⚠ Attention : pour cette étape le couple est Fe²⁺/Fe (et non Fe³⁺/Fe).']},
+    {id:'e2b', accept:['2'],
+     indices:['⚠ Nombre d\'électrons incorrect. Fe (0) → Fe²⁺ (+2) : différence de 2 charges → 2e⁻.','⚠ Variation de charge : 0 → +2, soit une perte de 2 électrons.']},
+  ]},
+  sg1:{ fields:[
+    {id:'eg1a', accept:['2'],
+     indices:['⚠ Coefficient de Fe incorrect. Multipliez ② par 2 pour obtenir 4e⁻ (autant que ①).','⚠ ① donne 4e⁻, ② donne 2e⁻ → multipliez ② par 2 → 2 Fe.']},
+    {id:'eg1b', accept:['1',''],
+     indices:['⚠ Coefficient de O₂ incorrect. ① n\'est pas multipliée → coefficient 1.']},
+    {id:'eg1c', accept:['4'],
+     indices:['⚠ Nombre de H⁺ incorrect. ① apporte 4H⁺.']},
+    {id:'eg1d', accept:['2'],
+     indices:['⚠ Coefficient de Fe²⁺ incorrect. ② × 2 donne 2 Fe²⁺.']},
+    {id:'eg1e', accept:['2'],
+     indices:['⚠ Coefficient de H₂O incorrect. ① donne 2H₂O → total : 2H₂O.']},
+  ]},
+  s3:{ fields:[
+    {id:'e3a', accept:['fe3+','fe³+'],
+     indices:['⚠ Ion incorrect. Ici le couple est Fe³⁺/Fe²⁺ → Fe²⁺ s\'oxyde en Fe³⁺.','⚠ Attention : couple Fe³⁺/Fe²⁺, pas Fe²⁺/Fe.']},
+    {id:'e3b', accept:['1'],
+     indices:['⚠ Nombre d\'électrons incorrect. Fe²⁺ (+2) → Fe³⁺ (+3) : différence de 1 → 1e⁻.','⚠ Variation de charge : +2 → +3 = perte d\'un seul électron.']},
+  ]},
+  sr:{ fields:[
+    {id:'er1', accept:['4'],
+     indices:['⚠ Coefficient de Fe²⁺ incorrect. Fe₂O₃ contient 2 Fe → 2 molécules → 4 Fe²⁺.','⚠ 2×Fe₂O₃ → 4 Fe²⁺ (2×2).']},
+    {id:'er2', accept:['8'],
+     indices:['⚠ Coefficient de H₂O incorrect. Équilibrez les atomes H entre H₂O et H⁺.','⚠ 16 H⁺ à droite → 8 H₂O à gauche (8×2=16 H).']},
+    {id:'er3', accept:['2fe2o3','2 fe2o3','2fe₂o₃','2 fe₂o₃'],
+     indices:['⚠ Produit incorrect. Les ions Fe³⁺ précipitent en Fe₂O₃.','⚠ N\'oubliez pas le coefficient : 4 Fe²⁺ → 2 Fe₂O₃ (Fe₂O₃ contient 2 Fe).']},
+    {id:'er4', accept:['16'],
+     indices:['⚠ Nombre de H⁺ incorrect. 8H₂O contient 16 H → 16H⁺.']},
+  ]},
+  seq:{ fields:[
+    {id:'eseq', accept:['2'],
+     indices:['⚠ Coefficient incorrect. ① échange 4e⁻. ② échange 2e⁻. Pour égaliser : multipliez ② par 2 → 2×2 = 4e⁻.','⚠ Il faut que ② donne aussi 4e⁻ : 2 × (Fe → Fe²⁺ + 2e⁻) = 2Fe → 2Fe²⁺ + 4e⁻. Coefficient = 2.']},
+  ]},
+};
+
+const RC_DATA = {
+  q5:{
+    keywords:['dégradation','structure','résistance','étanchéité','court-circuit','conduite','canalisation','tuyau','câble','sécurité','rupture','affaiblit','corrodé','fuite'],
+    fb_ok:'✅ Bonne réponse ! La corrosion dégrade la résistance mécanique des structures, provoque des fuites dans les canalisations, des courts-circuits dans les câbles, et représente un danger dans le bâtiment et l\'électrotechnique.',
+    fb_ko:'💡 Réponse incomplète. Pensez aux conséquences : dégradation mécanique, fuites de tuyaux, courts-circuits, risques de sécurité...',
+  },
+};
+
+/* ══════════════════════════════════
+   ACCORDÉON — Déverrouillage progressif
+══════════════════════════════════ */
+// Séquence de déverrouillage : clé → prochain bloc à ouvrir
+const UNLOCK_CHAIN = {
+  'q1':      'block-B',    // Q1 correct → déverrouille section B
+  'tableau': 'check-B',    // tableau ok → check partiel B (besoin aussi q3 + q4)
+  'q3':      'check-B',
+  'q4':      'block-C',    // q4 correct → déverrouille section C (si tableau+q3 aussi ok)
+  'eq-sr':   'block-Q6',   // dernière équation ok → déverrouille Q6
+  'q6':      'block-Q7',   // Q6 ok → déverrouille Q7
+};
+
+// Quels items doivent être validés pour ouvrir chaque bloc
+const PREREQS = {
+  'block-B':  ['q1'],
+  'block-C':  ['tableau','q3','q4'],
+  'block-Q6': ['eq-s1','eq-s2','eq-seq','eq-sg1','eq-s3','eq-sr'],
+  'block-Q7': ['q6'],
+};
+
+const done = {};
+const tentatives = { s1:0, s2:0, seq:0, sg1:0, s3:0, sr:0 };
+const errIdx     = { s1:{}, s2:{}, seq:{}, sg1:{}, s3:{}, sr:{} };
+
+function unlock(blockId) {
+  const el = document.getElementById(blockId);
+  if (!el || el.classList.contains('unlocked')) return;
+  el.classList.add('unlocked');
+  // Scroll doux vers le bloc
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+function checkUnlock(blockId) {
+  const prereqs = PREREQS[blockId];
+  if (!prereqs) return;
+  const allDone = prereqs.every(k => done[k]);
+  if (allDone) unlock(blockId);
+}
+
+function progress(id) {
+  if (done[id]) return;
+  done[id] = true;
+
+  // Mettre à jour la barre de progression
+  const TOTAL_STEPS = 7;
+  const countable = ['q1','tableau','q3','q4','eq-sr','q6','q2'].filter(k => done[k]).length;
+  document.getElementById('etape-n').textContent = countable;
+  document.getElementById('prog').style.width = (countable / TOTAL_STEPS * 100) + '%';
+
+  // Vérifier les déverrouillages
+  checkUnlock('block-B');
+  checkUnlock('block-C');
+  checkUnlock('block-Q6');
+  checkUnlock('block-Q7');
+}
+
+/* ══════════════════════════════════
+   QCM
+══════════════════════════════════ */
+function pickOpt(el, qid, letter) {
+  if (el.classList.contains('locked')) return;
+  const a = QCM[qid];
+  document.querySelectorAll(`#${qid}-opts .opt-item`).forEach(o => {
+    o.classList.add('locked');
+    if (o.dataset.l === a.correct) o.classList.add('correct');
+    else if (o === el) o.classList.add('wrong');
+  });
+  const ok = letter === a.correct;
+  showFb(qid, ok, ok ? a.fb_ok : a.fb_ko);
+  // Afficher le bouton réessayer si mauvaise réponse
+  const retryBtn = document.getElementById('btnretry-' + qid);
+  if (retryBtn) retryBtn.style.display = ok ? 'none' : 'inline-flex';
+  progress(qid);
+}
+
+function resetQCM(qid) {
+  document.querySelectorAll(`#${qid}-opts .opt-item`).forEach(o => {
+    o.classList.remove('locked','correct','wrong');
+  });
+  const fbEl = document.getElementById(qid + '-fb');
+  if (fbEl) { fbEl.className = 'fb'; fbEl.innerHTML = ''; }
+  const retryBtn = document.getElementById('btnretry-' + qid);
+  if (retryBtn) retryBtn.style.display = 'none';
+  // Permettre une nouvelle tentative (ne recompte pas dans la progression)
+}
+
+function resetTableau() {
+  const ids = ['tb1a','tb1b','tb1c','tb2a','tb2b','tb2c','tb3a','tb3b','tb3c','tb4a','tb4b','tb4c'];
+  ids.forEach(id => {
+    const inp = document.getElementById(id);
+    if (inp) { inp.value = ''; inp.classList.remove('ok','ko'); }
+  });
+  const fb = document.getElementById('tableau-fb');
+  if (fb) { fb.className = 'fb'; fb.innerHTML = ''; }
+  const btn = document.getElementById('btnretry-tableau');
+  if (btn) btn.style.display = 'none';
+}
+
+function resetTrous() {
+  ['t2a','t2b','t2c','t2d','t2e'].forEach(id => {
+    const inp = document.getElementById(id);
+    if (inp) { inp.value = ''; inp.classList.remove('ok','ko'); inp.disabled = false; }
+  });
+  const fb = document.getElementById('q2-fb');
+  if (fb) { fb.className = 'fb'; fb.innerHTML = ''; }
+  const btn = document.getElementById('btnretry-q7');
+  if (btn) btn.style.display = 'none';
+  // Réactiver le bouton valider
+  const valBtn = document.querySelector('[onclick="checkTrous(\'q2\')"]');
+  if (valBtn) valBtn.disabled = false;
+}
+
+/* ══════════════════════════════════
+   TABLEAU
+══════════════════════════════════ */
+function checkTableau() {
+  const ids = ['tb1a','tb1b','tb1c','tb2a','tb2b','tb2c','tb3a','tb3b','tb3c','tb4a','tb4b','tb4c'];
+  let allOk = true;
+  ids.forEach(id => {
+    const inp = document.getElementById(id);
+    const v = inp.value.trim().toLowerCase();
+    const ok = inp.dataset.accept.split('|').some(a => v.startsWith(a));
+    inp.classList.toggle('ok', ok);
+    inp.classList.toggle('ko', !ok);
+    if (!ok) allOk = false;
+  });
+  const fb = document.getElementById('tableau-fb');
+  fb.className = 'fb ' + (allOk ? 'ok' : 'ko');
+  fb.innerHTML = allOk
+    ? '✅ Tableau complété correctement !'
+    : '❌ Certaines cases sont incorrectes. Répondez par Oui ou Non. Les cases en rouge sont à corriger.';
+  if (allOk) progress('tableau');
+  const btn = document.getElementById('btnretry-tableau');
+  if (btn) btn.style.display = allOk ? 'none' : 'inline-flex';
+}
+
+/* ══════════════════════════════════
+   TEXTE À TROUS
+══════════════════════════════════ */
+function checkTrous(qid) {
+  let allOk = true;
+  TROUS_Q2.forEach(f => {
+    const inp = document.getElementById(f.id);
+    const v = inp.value.trim().toLowerCase();
+    const ok = f.accept.includes(v);
+    inp.classList.toggle('ok', ok);
+    inp.classList.toggle('ko', !ok);
+    inp.disabled = true;
+    if (!ok) { allOk = false; inp.value = f.hint; }
+  });
+  const btn = document.querySelector(`#${qid}-fb`).previousElementSibling;
+  if (btn) btn.disabled = true;
+  showFb(qid, allOk,
+    allOk
+      ? '✅ Parfait ! Les métaux nobles ont un très faible pouvoir réducteur : ils résistent à l\'oxydation.'
+      : '❌ Certaines réponses sont incorrectes — les mots attendus sont affichés en rouge.');
+  const retryBtn = document.getElementById('btnretry-q7');
+  if (retryBtn) retryBtn.style.display = allOk ? 'none' : 'inline-flex';
+  progress(qid);
+}
+
+/* ══════════════════════════════════
+   ÉQUATIONS — sans corrigé
+══════════════════════════════════ */
+function normalizeIon(v) {
+  // Met en minuscules, supprime espaces
+  v = v.trim().toLowerCase().replace(/\s/g, '');
+  // Normalise les exposants unicode → ascii
+  v = v.replace(/²/g, '2').replace(/³/g, '3').replace(/⁺/g, '+').replace(/⁻/g, '-');
+  // Normalise les subscripts unicode éventuels
+  v = v.replace(/₂/g, '2').replace(/₃/g, '3');
+  return v;
+}
+
+function verifEq(sid) {
+  const def = EQ_DEF[sid];
+  if (!def) return;
+  if (!tentatives[sid]) tentatives[sid] = 0;
+  tentatives[sid]++;
+  const t = tentatives[sid];
+  let allOk = true;
+  const erreurs = [];
+
+  def.fields.forEach(f => {
+    const inp = document.getElementById(f.id);
+    if (!inp) return;
+    const v = normalizeIon(inp.value);
+    const ok = f.accept.some(a => normalizeIon(a) === v);
+    inp.classList.remove('ok','ko');
+    inp.classList.add(ok ? 'ok' : 'ko');
+    if (!ok) {
+      allOk = false;
+      if (!errIdx[sid][f.id]) errIdx[sid][f.id] = 0;
+      erreurs.push(f.indices[errIdx[sid][f.id] % f.indices.length]);
+      errIdx[sid][f.id]++;
+    }
+  });
+
+  // Preview pour l'étape seq
+  if (sid === 'seq') {
+    const coef = parseInt(document.getElementById('eseq').value) || 0;
+    const preview = document.getElementById('seq-preview');
+    if (preview) {
+      preview.textContent = coef === 2
+        ? '2 × (Fe → Fe²⁺ + 2e⁻)  =  2 Fe → 2 Fe²⁺ + 4 e⁻'
+        : `${coef || '?'} × (Fe → Fe²⁺ + 2e⁻)  =  ${coef ? coef + ' Fe → ' + coef + ' Fe²⁺ + ' + (coef*2) + ' e⁻' : '?'}`;
+    }
+  }
+
+  const fbEl  = document.getElementById(sid + '-fb');
+  const tentEl = document.getElementById('tent-' + sid);
+  const retryBtn = document.getElementById('btnr-' + sid);
+  const valBtn = document.getElementById('btnv-' + sid);
+
+  if (allOk) {
+    if (fbEl)  { fbEl.className = 'fb ok'; fbEl.innerHTML = sid === 'seq'
+      ? '✅ Correct ! ② × 2 donne 2Fe → 2Fe²⁺ + 4e⁻. Les deux demi-équations échangent maintenant 4e⁻ chacune.'
+      : '✅ Équation correcte et bien équilibrée ! Recopiez-la sur votre feuille.'; }
+    if (valBtn)   valBtn.disabled = true;
+    if (retryBtn) retryBtn.classList.remove('visible');
+    if (tentEl)   tentEl.textContent = '';
+    progress('eq-' + sid);
+  } else {
+    if (fbEl) {
+      fbEl.className = 'fb ko';
+      const list = [...new Set(erreurs)].map(e => `<li>${e}</li>`).join('');
+      fbEl.innerHTML = `❌ Des erreurs sont présentes (champs en rouge).<ul style="margin:6px 0 0;padding-left:18px">${list}</ul>`;
+    }
+    if (retryBtn) retryBtn.classList.add('visible');
+    if (tentEl)   tentEl.textContent = `Tentative n°${t} — Corrigez les champs en rouge et réessayez.`;
+  }
+}
+
+function resetEq(sid) {
+  const def = EQ_DEF[sid];
+  if (!def) return;
+  def.fields.forEach(f => {
+    const inp = document.getElementById(f.id);
+    if (inp) { inp.value = ''; inp.classList.remove('ok','ko'); }
+  });
+  const fbEl    = document.getElementById(sid + '-fb');
+  const tentEl  = document.getElementById('tent-' + sid);
+  const retryBtn = document.getElementById('btnr-' + sid);
+  const valBtn  = document.getElementById('btnv-' + sid);
+  if (fbEl)     { fbEl.className = 'fb'; fbEl.innerHTML = ''; }
+  if (tentEl)   tentEl.textContent = '';
+  if (retryBtn) retryBtn.classList.remove('visible');
+  if (valBtn)   valBtn.disabled = false;
+  if (sid === 'seq') {
+    const preview = document.getElementById('seq-preview');
+    if (preview) preview.textContent = 'Fe → Fe²⁺ + ? e⁻';
+  }
+}
+
+/* ══════════════════════════════════
+   FEEDBACK
+══════════════════════════════════ */
+function showFb(id, ok, msg) {
+  const el = document.getElementById(id + '-fb');
+  if (!el) return;
+  el.className = 'fb ' + (ok ? 'ok' : 'ko');
+  el.innerHTML = msg;
+}
+
+/* ══════════════════════════════════
+   INIT
+══════════════════════════════════ */
+document.getElementById('etape-tot').textContent = 7;
+// Pas d'animation-delay sur les qblocks : l'accordéon gère l'apparition
+</script>
+</body>
+</html>
